@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Торты
+{% endblock title %}
+
+
+{% block content %}
+
+{% if user.is_authenticated %}
+Привет, {{user.username}}
+    <a href="{% url 'sign_out' %}" class="btn btn-danger">Выйти</a>
+ {% endif %}
+
+<br><br><br>
+<table class="table table-bordered border-primary">
+    <tr>
+        <th>Форма</th>
+    </tr>
+    {% for cake in cakes %}
+    <tr>
+        <th>{{cake.form}}</th>
+    </tr>
+
+    {% endfor %}
+</table>
+<br>
+{% endblock %}
