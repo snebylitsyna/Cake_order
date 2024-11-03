@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('weight', models.DecimalField(decimal_places=2, max_digits=6, verbose_name='Вес торта')),
-                ('photo', models.ImageField(blank=True, null=True, upload_to='goods/', verbose_name='Приложите фото торта, который вам нравится')),
+                ('photo', models.ImageField(blank=True, null=True, upload_to='cakes/', verbose_name='Приложите фото торта, который вам нравится')),
                 ('inscription', models.CharField(max_length=50, verbose_name='Надпись на торте')),
                 ('price', models.DecimalField(decimal_places=2, default=0.0, max_digits=6, verbose_name='Цена торта, сом')),
                 ('prepayment', models.DecimalField(decimal_places=2, max_digits=6, verbose_name='Предоплата 50%')),
@@ -178,7 +178,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50, verbose_name='Наименование ингредиента')),
                 ('price', models.DecimalField(decimal_places=2, max_digits=6, verbose_name='Цена,сом/кг')),
                 ('quantity', models.IntegerField(verbose_name='Количество,кг')),
-                ('photo', models.ImageField(blank=True, null=True, upload_to='goods/')),
+                ('photo', models.ImageField(blank=True, null=True, upload_to='cakes/')),
                 ('manufacturer', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='cakes.manufacturer')),
                 ('status', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='cakes.status')),
             ],

@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -67,8 +69,8 @@ def conf_del_shop(request, pk):
 
 class GoodListView(ListView):
     model = models.Good
-    template_name = 'goods.html'
-    context_object_name = 'goods'
+    template_name = 'cakes.html'
+    context_object_name = 'cakes'
 
 
 class GoodCreateView(CreateView):
@@ -164,27 +166,61 @@ def cake_create(request):
             cake = form.save(commit=False)
             cake.price = cake.weight * 1000
             cake.prepayment = cake.price / 2
+            cake.client = request.user
             cake.save()
-            return render(request, 'cakes.html', {'cake': cake})
+            return redirect('cakes')
+
         else:
             return redirect('cake_create')
     else:
         form = forms.CakeForm()
     return render(request, 'cake_create.html', {'form': form})
 
+
+def cake_update(request, pk):
+    cake = get_object_or_404(models.Cake, pk=pk)
+    if request.method == 'POST':
+        form = forms.UpdateCakeForm(request.POST, request.FILES, instance=cake)
+        if form.is_valid():
+            form.save()
+            return redirect('cakes')
+    else:
+        form = forms.UpdateCakeForm(instance=cake)
+    return render(request, 'cake_update.html', {'form': form})
+
+
 def cakes(request):
     user = request.user
-    queryset = models.Cake.objects.all
-    return render(request, 'cakes.html', {'cakes': queryset})
+    if user.groups.filter(name='client').exists():
+        is_client = True
+        queryset = models.Cake.objects.filter(client=request.user)
+    else:
+        is_client = False
+        queryset = models.Cake.objects.all
+    return render(request, 'cakes.html', {'cakes': queryset, 'is_client': is_client})
 
-# def order_create(request):
-#     if request.method == 'POST':
-#         form = forms.OrderForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('client_main')
-#         else:
-#             return redirect('order_create')
-#     else:
-#         form = forms.OrderForm()
-#     return render(request, 'order_create.html', {'form': form})
+
+def cake_detail(request, cake_id):
+    cake = get_object_or_404(models.Cake, pk=cake_id)
+    return render(request, 'cake_detail.html', {'cake': cake})
+
+
+class CakeUpdateView(UpdateView):
+    model = models.Cake
+    form_class = forms.CakeForm
+    template_name = 'cake_update.html'
+    success_url = reverse_lazy('cakes')
+
+
+class CakeDeleteView(DeleteView):
+    model = models.Cake
+    success_url = reverse_lazy('cakes')
+    template_name = 'cakes.html'
+
+
+def confirm_delete_cake(request, pk):
+    cake = get_object_or_404(models.Cake, pk=pk)
+    if (cake.date_ready - datetime.date.today()).days >= 1:
+        return render(request, 'confirm_delete_cake.html', {'cake': cake})
+    else:
+        return render(request, 'fail_delete_cake.html', {'cake': cake})

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Add cake{% endblock title %}
+{% block content %}
+
+<h1>Редактировать заказ</h1>
+<form action="{% url 'cake_update' form.instance.id %}" method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Подтвердить изменение заказа" class="btn btn-success">
+</form>
+<br>
+<a href="{% url 'cakes' %}"  class="btn btn-info">Вернуться на список заказов</a>
+
+{% endblock %}

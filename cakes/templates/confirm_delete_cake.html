@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<p>Вы действительно хотите удалить заказ?</p>
+<form action="{% url 'cake_delete' cake.pk %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Да">
+</form>
+<a href="{% url 'cakes' %}">Нет</a>
+{% endblock %}

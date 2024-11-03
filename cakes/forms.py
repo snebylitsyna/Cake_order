@@ -63,25 +63,28 @@ class CreateUserForm(UserCreationForm):
 class CakeForm(forms.ModelForm):
     class Meta:
         model = models.Cake
-        fields = ['form', 'tier', 'filling', 'weight', 'photo', 'color', 'inscription', 'date_ready', 'shop', 'comments']
+        fields = ['form', 'tier', 'filling', 'weight', 'photo', 'color', 'inscription', 'date_ready', 'shop',
+                  'comments', 'client_name', 'phone_number']
         widgets = {
             'form': forms.Select(),
             'tier': forms.Select(),
             'filling': forms.Select(),
             'weight': forms.NumberInput(attrs={'step': 0.50, 'max': 4.00, "min": 1.00}),
             'photo': forms.FileInput(),
-            'color': forms.Select(),
+            'color': forms.TextInput(attrs={'type': 'color'}),
             'inscription': forms.TextInput(),
             'date_ready': forms.DateInput(attrs={'type': 'date'}),
             'shop': forms.Select(),
-            'comments': forms.TextInput()
+            'comments': forms.TextInput(),
+            'client_name': forms.TextInput(),
+            'phone_number': forms.TextInput(),
         }
 
-# class OrderForm(forms.ModelForm):
-#     class Meta:
-#         model = models.Order
-#         fields = ['date_ready', 'shop']
-#         widgets = {
-#             'date_ready': forms.DateInput(attrs={'type': 'date'}),
-#             'shop': forms.Select(),
-#         }
+
+class UpdateCakeForm(forms.ModelForm):
+    class Meta:
+        model = models.Cake
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(),
+        }

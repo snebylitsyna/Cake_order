@@ -104,34 +104,12 @@ class Filling(models.Model):
         return f'{self.name}'
 
 
-class Color(models.Model):
-    name = models.CharField(max_length=50, verbose_name="Цветовая гамма торта")
-
-    class Meta:
-        verbose_name_plural = "Цветовая гамма торта"
-        ordering = ['name']
-
-    def __str__(self):
-        return f'{self.name}'
-
-
-class Weight(models.Model):
-    name = models.DecimalField(max_digits=3, decimal_places=2, verbose_name='Вес торта')
-
-    class Meta:
-        verbose_name_plural = "Вес торта"
-        ordering = ['name']
-
-    def __str__(self):
-        return f'{self.name}'
-
-
 class Good(models.Model):
     name = models.CharField(max_length=50, verbose_name="Наименование ингредиента")
     price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Цена,сом/кг")
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(verbose_name='Количество,кг')
-    photo = models.ImageField(upload_to='goods/', null=True, blank=True)
+    photo = models.ImageField(upload_to='cakes/', null=True, blank=True)
     status = models.ForeignKey(Status, on_delete=models.DO_NOTHING)
 
     def __str__(self):
@@ -147,16 +125,19 @@ class Cake(models.Model):
     tier = models.ForeignKey(Tier, on_delete=models.DO_NOTHING, verbose_name="Количество ярусов торта (этажей)")
     filling = models.ForeignKey(Filling, on_delete=models.DO_NOTHING, verbose_name="Начинка")
     weight = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Вес торта")
-    photo = models.ImageField(upload_to='goods/', null=True, blank=True, verbose_name="Приложите фото торта, который вам нравится")
-    color = models.ForeignKey(Color, on_delete=models.DO_NOTHING, verbose_name="Основная цветовая гамма")
+    photo = models.ImageField(upload_to='cakes/', null=True, blank=True, verbose_name="Приложите фото торта, который вам нравится")
+    color = models.CharField(max_length=30, default='', verbose_name="Основная цветовая гамма")
     inscription = models.CharField(max_length=50, verbose_name="Надпись на торте")
     price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Цена торта, сом', default=0.00)
     prepayment = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Предоплата 50%')
     date_create = models.DateField(verbose_name='Дата создания заказа', default=datetime.date.today())
     date_ready = models.DateField(verbose_name='Дата выдачи торта', default=datetime.date.today())
-    _status = models.ForeignKey(OrderStatus, on_delete=models.DO_NOTHING, default=1, verbose_name='Статус заказа')
+    status = models.ForeignKey(OrderStatus, on_delete=models.DO_NOTHING, default=1, verbose_name='Статус заказа')
     shop = models.ForeignKey(Shop, on_delete=models.DO_NOTHING, default=1, verbose_name='Магазин для получения торта')
     comments = models.CharField(max_length=250, default='', verbose_name="Комментарии")
+    client_name = models.CharField(max_length=30, default='', verbose_name="Имя клиента")
+    phone_number = models.CharField(max_length=30, default='', verbose_name="Номер телефона")
+    client = models.TextField(verbose_name='Заказчик',default='')
 
     def __str__(self):
         return f'{self.form} {self.tier} {self.filling} {self.weight}'
@@ -165,17 +146,3 @@ class Cake(models.Model):
         verbose_name_plural = "Торты"
         ordering = ['filling']
 
-
-# class Order(models.Model):
-#     cake = models.ForeignKey(Cake, on_delete=models.DO_NOTHING)
-#     date_create = models.DateField(verbose_name='Дата создания заказа', default=datetime.date.today())
-#     date_ready = models.DateField(verbose_name='Дата выдачи торта', default=datetime.date.today())
-#     order_status = models.ForeignKey(OrderStatus, on_delete=models.DO_NOTHING, default=1, verbose_name='Статус заказа')
-#     shop = models.ForeignKey(Shop, on_delete=models.DO_NOTHING, verbose_name='Магазин для получения торта')
-#
-#     def __str__(self):
-#         return f'{self.date_ready} {self.order_status} {self.shop} '
-#
-#     class Meta:
-#         verbose_name_plural = "Заказы"
-#         ordering = ['date_create']

@@ -15,11 +15,31 @@
 <br><br><br>
 <table class="table table-bordered border-primary">
     <tr>
-        <th>Форма</th>
+        <th>Номер заказа</th>
+        <th>Имя заказчика</th>
+        <th>Номер телефона</th>
+        <th>Дата выдачи</th>
+        <th>Сумма оплаты</th>
+        <th>Магазин</th>
+        <th>Статус</th>
+    {% if is_client == False %}
+        <th></th>
+        <th></th>
+    {% endif %}
     </tr>
     {% for cake in cakes %}
     <tr>
-        <th>{{cake.form}}</th>
+        <th><a href="{% url 'cake_detail' cake.id %}">{{cake.id}}</a></th>
+        <th>{{cake.client_name}}</th>
+        <th>{{cake.phone_number}}</th>
+        <th>{{cake.date_ready}}</th>
+        <th>{{cake.price}}</th>
+        <th>{{cake.shop}}</th>
+        <th>{{cake.status}}</th>
+{% if is_client == False %}
+        <th><a href="{% url 'cake_update' cake.id %}" class="btn btn-info">Редактировать заказ</a></th>
+        <th><a href="{% url 'conf_del_cake' cake.id %}" class="btn btn-danger">Удалить заказ</a></th>
+{% endif %}
     </tr>
 
     {% endfor %}

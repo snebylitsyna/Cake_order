@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Add cake{% endblock title %}
+{% block content %}
+
+<h1>Детали заказа:</h1>
+
+<p>Клиент: {{cake.client_name}} создал торт со следующими параметрами:</p>
+<p>Номер телефона: {{cake.phone_number}}</p>
+<p>Вес: {{cake.weight}} кг.</p>
+<p>Форма: {{cake.form}}</p>
+<p>Количество ярусов торта (этажей): {{cake.tier}}</p>
+<p>Начинка: {{cake.filling}}</p>
+<p>Фото-пример:</p>
+{% if cake.photo %}
+<img src="{{ cake.photo.url }}" width="50%" height="50%">
+{% endif %}
+<p></p>
+<p>Цветовая гамма торта: {{cake.color}}</p>
+<p>Надпись: {{cake.inscription}}</p>
+<p>Цена торта составляет: {{cake.price}}, сом.</p>
+<p>Дата создания заказа: {{cake.date_create}}</p>
+<p>Дата выдачи: {{cake.date_ready}}</p>
+<p>Статус: {{cake.status}}</p>
+<p>Магазин: {{cake.shop}}</p>
+<p>Комментарии: {{cake.comments}}</p>
+
+{% if is_client == False %}
+<br><br>
+<a href="{% url 'cake_update' cake.id %}"  class="btn btn-info">Редактировать заказ</a>
+{% endif %}
+{% endblock %}
