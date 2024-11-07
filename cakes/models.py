@@ -125,7 +125,7 @@ class Cake(models.Model):
     tier = models.ForeignKey(Tier, on_delete=models.DO_NOTHING, verbose_name="Количество ярусов торта (этажей)")
     filling = models.ForeignKey(Filling, on_delete=models.DO_NOTHING, verbose_name="Начинка")
     weight = models.DecimalField(max_digits=6, decimal_places=2, verbose_name="Вес торта")
-    photo = models.ImageField(upload_to='cakes/', null=True, blank=True, verbose_name="Приложите фото торта, который вам нравится")
+    photo = models.ImageField(upload_to='media/cakes/', null=True, blank=True, verbose_name="Приложите фото торта, который вам нравится")
     color = models.CharField(max_length=30, default='', verbose_name="Основная цветовая гамма")
     inscription = models.CharField(max_length=50, verbose_name="Надпись на торте")
     price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Цена торта, сом', default=0.00)

@@ -15,6 +15,50 @@ from . import models
 from . import forms
 
 
+class GoodListView(ListView):
+    model = models.Good
+    template_name = 'cakes.html'
+    context_object_name = 'cakes'
+
+
+class GoodCreateView(CreateView):
+    model = models.Good
+    form_class = forms.GoodForm
+    template_name = 'good_create.html'
+    success_url = reverse_lazy('good_list')
+
+
+class GoodUpdateView(UpdateView):
+    model = models.Good
+    form_class = forms.GoodForm
+    template_name = 'good_update.html'
+    success_url = reverse_lazy('good_list')
+
+
+class GoodDeleteView(DeleteView):
+    model = models.Good
+    success_url = reverse_lazy('good_list')
+    template_name = 'good_delete.html'
+
+
+def conf_del_good(request, pk):
+    good = get_object_or_404(models.Good, pk=pk)
+    return render(request, 'conf_del_good.html', {'good': good})
+
+
+class ManufacturerListView(ListView):
+    model = models.Manufacturer
+    template_name = 'manufacturers.html'
+    context_object_name = 'manufacturers'
+
+
+class ManufacturerCreateView(CreateView):
+    model = models.Manufacturer
+    form_class = forms.ManufacturerForm
+    template_name = 'manufacturer_create.html'
+    success_url = reverse_lazy('manufacturer_list')
+
+
 def admin_edit(request):
     return render(request, 'admin_edit.html')
 
@@ -67,56 +111,12 @@ def conf_del_shop(request, pk):
     return render(request, 'conf_del_shop.html', {'shop': shop})
 
 
-class GoodListView(ListView):
-    model = models.Good
-    template_name = 'cakes.html'
-    context_object_name = 'cakes'
-
-
-class GoodCreateView(CreateView):
-    model = models.Good
-    form_class = forms.GoodForm
-    template_name = 'good_create.html'
-    success_url = reverse_lazy('good_list')
-
-
-class GoodUpdateView(UpdateView):
-    model = models.Good
-    form_class = forms.GoodForm
-    template_name = 'good_update.html'
-    success_url = reverse_lazy('good_list')
-
-
-class GoodDeleteView(DeleteView):
-    model = models.Good
-    success_url = reverse_lazy('good_list')
-    template_name = 'good_delete.html'
-
-
-def conf_del_good(request, pk):
-    good = get_object_or_404(models.Good, pk=pk)
-    return render(request, 'conf_del_good.html', {'good': good})
-
-
-class ManufacturerListView(ListView):
-    model = models.Manufacturer
-    template_name = 'manufacturers.html'
-    context_object_name = 'manufacturers'
-
-
-class ManufacturerCreateView(CreateView):
-    model = models.Manufacturer
-    form_class = forms.ManufacturerForm
-    template_name = 'manufacturer_create.html'
-    success_url = reverse_lazy('manufacturer_list')
-
-
-def sign_out(request):
+def sign_out(request):  # выход из учетной записи
     logout(request)
     return redirect('main')
 
 
-def sign_up(request):
+def sign_up(request):  # регистрация
     if request.method == 'POST':
         form = forms.CreateUserForm(request.POST)
         if form.is_valid():
@@ -131,7 +131,7 @@ def sign_up(request):
         return render(request, 'sign_up.html', {'form': form})
 
 
-def sign_in(request):
+def sign_in(request):  # авторизация
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -161,7 +161,7 @@ def client_main(request):
 
 def cake_create(request):
     if request.method == 'POST':
-        form = forms.CakeForm(request.POST)
+        form = forms.CakeForm(request.POST, request.FILES)
         if form.is_valid():
             cake = form.save(commit=False)
             cake.price = cake.weight * 1000
@@ -189,7 +189,7 @@ def cake_update(request, pk):
     return render(request, 'cake_update.html', {'form': form})
 
 
-def cakes(request):
+def cakes(request):  # список заказов
     user = request.user
     if user.groups.filter(name='client').exists():
         is_client = True
@@ -200,7 +200,7 @@ def cakes(request):
     return render(request, 'cakes.html', {'cakes': queryset, 'is_client': is_client})
 
 
-def cake_detail(request, cake_id):
+def cake_detail(request, cake_id):  # детали заказа
     cake = get_object_or_404(models.Cake, pk=cake_id)
     return render(request, 'cake_detail.html', {'cake': cake})
 
@@ -218,9 +218,10 @@ class CakeDeleteView(DeleteView):
     template_name = 'cakes.html'
 
 
-def confirm_delete_cake(request, pk):
+def confirm_delete_cake(request, pk):  # подтверждение удаления заказа
     cake = get_object_or_404(models.Cake, pk=pk)
     if (cake.date_ready - datetime.date.today()).days >= 1:
-        return render(request, 'confirm_delete_cake.html', {'cake': cake})
+        return render(request, 'confirm_delete_cake.html', {'cake': cake})  # Вы действительно хотите удалить заказ?
     else:
-        return render(request, 'fail_delete_cake.html', {'cake': cake})
+        return render(request, 'fail_delete_cake.html', {'cake': cake})  # Вы не можете удалить заказ, потому что до
+        # даты заказа осталось менее суток!

@@ -63,13 +63,14 @@ class CreateUserForm(UserCreationForm):
 class CakeForm(forms.ModelForm):
     class Meta:
         model = models.Cake
-        fields = ['form', 'tier', 'filling', 'weight', 'photo', 'color', 'inscription', 'date_ready', 'shop',
+        fields = ['form', 'tier', 'filling', 'weight', 'photo', 'status','color', 'inscription', 'date_ready', 'shop',
                   'comments', 'client_name', 'phone_number']
         widgets = {
             'form': forms.Select(),
             'tier': forms.Select(),
             'filling': forms.Select(),
             'weight': forms.NumberInput(attrs={'step': 0.50, 'max': 4.00, "min": 1.00}),
+            'status': forms.Select(),
             'photo': forms.FileInput(),
             'color': forms.TextInput(attrs={'type': 'color'}),
             'inscription': forms.TextInput(),
